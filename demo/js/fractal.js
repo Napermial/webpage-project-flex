@@ -10,32 +10,32 @@ for(let x=0; x < myCanvas.width; x++) {
         let belongsToSet =
             checkIfBelongsToMandelbrotSet(x / magnificationFactor - panX,
                 y / magnificationFactor - panY);
-        if(belongsToSet) {
-            context.fillRect(x,y, 1,1);
+        if(belongsToSet === 0) {
+            context.fillStyle = '#000';
+            context.fillRect(x,y, 1,1); // Draw a black pixel
+        } else {
+            context.fillStyle = 'hsl(0, 100%, ' + belongsToSet + '%)';
+            context.fillRect(x,y, 1,1); // Draw a colorful pixel
         }
     }
 }
 
-function checkIfBelongsToMandelbrotSet(x, y) {
+function checkIfBelongsToMandelbrotSet(x,y) {
     let realComponentOfResult = x;
     let imaginaryComponentOfResult = y;
-
-    for(let i = 0; i < 10; i++) {
-        // Calculate the real and imaginary components of the result
-        // separately
+    const maxIterations = 100;
+    for(let i = 0; i < maxIterations; i++) {
         const tempRealComponent = realComponentOfResult * realComponentOfResult
             - imaginaryComponentOfResult * imaginaryComponentOfResult
             + x;
-
-        let tempImaginaryComponent = 2 * realComponentOfResult * imaginaryComponentOfResult
+        const tempImaginaryComponent = 2 * realComponentOfResult * imaginaryComponentOfResult
             + y;
-
         realComponentOfResult = tempRealComponent;
         imaginaryComponentOfResult = tempImaginaryComponent;
+
+        // Return a number as a percentage
+        if(realComponentOfResult * imaginaryComponentOfResult > 5)
+            return (i/maxIterations * 100);
     }
-
-    if (realComponentOfResult * imaginaryComponentOfResult < 5)
-        return true;
-
-    return false;
+    return 0;   // Return zero if in set
 }
